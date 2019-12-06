@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<style type="text/css">
+#main{
+    display: flex;
+}
+
+/* 左侧菜单栏 */
+#main .aside{
+    width:200px;
+    height:600px;
+    background-color: pink;
+}
+
+li{
+    list-style:none;
+    text-align: center;
+    padding:30px 0;
+    border-bottom: 1px solid gray;
+    cursor: pointer;
+}
+
+/* 右侧内容区 */
+#main .content{
+    height:600px;
+    flex:1;
+    background-color: lightblue;
+}
+</style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="main">
+        <div class="aside">
+            <ul>
+                <li class="aside-saleman">销售员</li>
+                <li class="aside-car">汽车</li>
+                <li class="aside-shop">经销商</li>
+            </ul>
+        </div>
+        <div class="content"></div>
+    </div>
+</body>
+<script data-main="./app" src="./js/lib/require.js"></script>
+</html>
