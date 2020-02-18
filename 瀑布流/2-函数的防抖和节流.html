@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>函数的防抖和节流</title>
+	<!-- IMPORT CSS -->
+	<link rel="stylesheet" href="css/reset.min.css">
+	<style>
+		html,
+		body {
+			height: 500%;
+			background: -webkit-linear-gradient(top left, lightblue, lightgreen, lightyellow, orange);
+		}
+	</style>
+</head>
+
+<body>
+	<script src="node_modules/underscore/underscore.js"></script>
+	<script>
+		/*
+		 * https://underscorejs.org/  JS类库（提供很多项目中需要经常使用的方法）
+		 * 
+		 * 函数的防抖（debounce）：不是某个事件触发就去执行函数，而是在指定的时间间隔内，执行一次，减少函数执行的次数 
+		 * 
+		 * 函数的节流（throttle）：为了缩减执行的频率，但不像防抖一样，一定时间内只能执行一次，而是一定时间内能执行多次
+		 */
+
+		/*
+		 * debounce:函数防抖
+		 *   @params
+		 *      func:要执行的函数
+		 *      wait:间隔等待时间
+		 *      immediate:在开始边界还是结束边界触发执行(TRUE=>在开始边界)
+		 *   @return
+		 *      可被调用的函数
+		 * by zhufengpeixun on 2019/08/21
+		 */
+		function debounce(func, wait, immediate) {
+			let result = null,
+				timeout = null;
+			return function (...args) {
+				let context = this,
+					now = immediate && !timeout;
+				clearTimeout(timeout); //=>重要：在设置新的定时器之前，我们要把之前设置的定时器都干掉，因为防抖的目的是等待时间内，只执行一次
+				timeout = setTimeout(() => {
+					timeout = null;
+					if (!immediate) result = func.call(context, ...args);
+				}, wait);
+				if (now) result = func.call(context, ...args);
+				return result;
+			}
+		}
+
+		/*
+		 * throttle：函数节流是为了缩减执行频率，当达到了一定的时间间隔就会执行一次
+		 *   @params
+		 *      func:需要执行的函数
+		 *      wait:设置的间隔时间
+		 *   @return
+		 *      返回可被调用的函数
+		 * by zhufengpeixun on 2019/08/20
+		 */
+		let throttle = function (func, wait) {
+			let timeout = null,
+				result = null,
+				previous = 0; //=>上次执行时间点
+			return function (...args) {
+				let now = new Date,
+					context = this;
+				//=>remaining小于等于0，表示上次执行至此所间隔时间已经超过一个时间间隔
+				let remaining = wait - (now - previous);
+				if (remaining <= 0) {
+					clearTimeout(timeout);
+					previous = now;
+					timeout = null;
+					result = func.apply(context, args);
+				} else if (!timeout) {
+					timeout = setTimeout(() => {
+						previous = new Date;
+						timeout = null;
+						result = func.apply(context, args);
+					}, remaining);
+				}
+				return result;
+			};
+		};
+
+		let count = 0;
+
+		function fn() {
+			console.log(++count);
+		}
+		let lazyFn = _.throttle(fn, 1000);
+		window.onscroll = lazyFn;
+	</script>
+
+
+
+</body>
+
+</html>

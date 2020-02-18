@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ajax封装</title>
+</head>
+<body>
+123
+</body>
+</html>
+
+<script type="text/javascript">
+	//函数执行之后是对象?
+	//函数return对象即可
+	//立即执行
+	var $ = (function(){
+	
+		function doAjax(opt){
+			//每次都创新新的ajax去操作!!!!!!!写在上面的话，同一个对象去处理多个$.ajax  $.ajax  这样只会最后一个执行
+			var o = window.XMLHttpRequest ? 
+				new XMLHttpRequest() :
+				new ActiveXObject('Microsoft.XMTHttp');
+			var t = null;
+			if(!o){
+				throw new Error("您的浏览器不支持");
+			}
+			//传递的参数以及默认值
+			var opt = opt || {},
+				type = (opt.type || 'GET').toUpperCase(),
+				async = (''+opt.async)=='false'?false:true,
+				url = opt.url,
+				dataType = opt.dataType || 'JSON',
+				data = opt.data || null,
+				timeout = opt.timeout || 30000,
+				error = opt.error || function(){},
+				success = opt.success || function(){},
+				complete = opt.complete || function(){};
+			if(!url){
+				throw new Error('没有填写url');
+			}
+
+			o.open(type,url,async);
+			type === 'POST' && o.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+			o.send(type==='GET' ? null : formatDatas(data));
+
+			//判断超时类似 ontimeout
+			t=setTimeout(function(){
+				o.abort();//超时就终止
+				clearTimeout(t);
+				t=null;
+				o=null;
+				complete();//无论是否超时都执行loadend
+			},timeout)
+
+			console.log(formatDatas(data));
+			o.onreadystatechange = function(){
+				if(o.readyState=='4'&&o.status==='200'){
+					switch(dataType.toUpperCase()){
+						case 'JSON':
+							success(JSON.parse(o.reponseText));
+							break;
+						case 'TEXT':
+							success(o.reponseText);
+							break;
+						case 'XML':
+							success(o.reponseXML);
+							break;
+						default:
+							success(JSON.parse(o.reponseText));
+							break;	
+					}
+					complete();
+					clearTimeout(t);
+					t=null;
+					o=null;
+				}else{
+					error();
+				}
+			}
+		}
+		function formatDatas(data){
+			let str = '';
+			for(key in data){
+				str += `${key}=${data[key]}&`;
+			}
+			return str.replace(/&$/,'');
+		}
+		
+		return {
+			ajax:function(opt){
+				doAjax(opt);
+			},
+			post:function(url,data,cb){
+				doAjax({type:'post',url:url,data:data,success:cb});	
+			},
+			get:function(){
+
+			}
+		}
+	})()
+	
+	// $.ajax({type:'get',url:'1.json',success:function(res){
+	// 	console.log(res)
+	// }});
+	$.post('test.php',{status:1,flag:2},function(res){
+		console.log(res)
+	})
+</script>

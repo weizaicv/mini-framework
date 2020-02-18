@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>zTree树形结构菜单</title>
+	<!-- import css -->
+	<link rel="stylesheet" href="css/reset.min.css">
+	<style>
+		.container {
+			box-sizing: border-box;
+			margin: 20px auto;
+			padding: 10px;
+			width: 600px;
+			border: 1px dashed #AAA;
+			-webkit-user-select: none;
+		}
+
+		.level {
+			display: none;
+			font-size: 14px;
+			margin-left: 10px;
+		}
+
+		.level.level0 {
+			display: block;
+			margin-left: 0;
+		}
+
+		.level li {
+			position: relative;
+			padding-left: 15px;
+			line-height: 30px;
+		}
+
+		.level li .icon {
+			position: absolute;
+			left: 0;
+			top: 9px;
+			box-sizing: border-box;
+			width: 12px;
+			height: 12px;
+			line-height: 8px;
+			text-align: center;
+			border: 1px solid #AAA;
+			background: #EEE;
+			cursor: pointer;
+		}
+
+		.level li .icon:after {
+			display: block;
+			content: "+";
+			font-size: 12px;
+			font-style: normal;
+		}
+
+		.level li .icon.open:after {
+			content: "-";
+		}
+
+		.level li .title {
+			color: #000;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<ul class="level level0" id="tree1"></ul>
+	</div>
+	<div class="container">
+		<ul class="level level0" id="tree2"></ul>
+	</div>
+
+	<!-- import js -->
+	<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+	<script src="js/ztree-plugin.js"></script>
+	<script>
+		$.ajax({
+			url: 'data.json',
+			method: 'get',
+			success: result => {
+				$('#tree1').ztree(result);
+				$('#tree2').ztree(result);
+			}
+		});
+	</script>
+
+	<script>
+		/* let treeModule = (function () {
+			let $level0 = $('.level0'),
+				count = 0;
+
+			//=>获取数据
+			let queryData = function (callBack) {
+				$.ajax({
+					url: 'data.json',
+					method: 'get',
+					success: callBack
+					// success: result => {
+					// 	callBack(result);
+					// }
+				});
+			};
+
+			//=>数据绑定
+			let bindHTML = function (result) {
+				let str = ``;
+				result.forEach(item => {
+					count++;
+					let {
+						name,
+						open,
+						children
+					} = item;
+					str += `<li>
+						<a href="" class="title">${name}</a>
+						${children?`<em class="icon ${open?'open':''}"></em>
+						<ul class="level level${count}" 
+							style="display:${open?'block':'none'}">
+							${bindHTML(children)}
+						</ul>`:``}
+					</li>`;
+					count--;
+				});
+				return str;
+			};
+
+			return {
+				init() {
+					//=>基于事件委托实现点击操作
+					$level0.click(function (ev) {
+						let target = ev.target,
+							$target = $(target),
+							$next = $target.next('ul');
+						if (target.tagName === 'EM') {
+							//=>加减号的切换
+							$target.toggleClass('open');
+							//=>控制子集的显示隐藏
+							$next.stop().slideToggle(100);
+						}
+					});
+
+					queryData(function anonymous(result) {
+						//=>获取数据后完成相关的事项
+						$level0.html(bindHTML(result));
+					});
+				}
+			}
+		})();
+		treeModule.init(); */
+	</script>
+</body>
+
+</html>

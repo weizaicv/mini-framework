@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<!-- 
+1.
+知道宽高 width left margin-left:-width/2  right同理
+不知道宽高 left margin-left transform:translateX(-50%)
+2.flex
+-->
+<style type="text/css">
+/*.k-dialog{
+	width: 30%;
+	z-index: 1000;
+	position: absolute;
+	left:50%;
+	margin-left: -15%;
+	top:50%;
+	transform: translateY(-50%);
+	background: #fff;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}*/
+
+html,body{height: 100%;width: 100%;margin: 0;padding: 0}
+.k-wrapper{
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background:black;
+	opacity: .2;
+	z-index: 1000;
+	display: none;
+}
+/*.k-dialog-wrapper{
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	display: none;
+	z-index: 3000;
+}*/
+.k-dialog-wrapper{
+	margin-top: 10%;
+	display: none;
+}
+.k-dialog{
+	position: absolute;
+	left: 50%;
+	margin-left: -15%;
+	z-index: 3000;
+	width: 30%;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+	background: #fff;
+    border-radius: 2px;
+}
+.k-header{
+	background: #999;
+	color: #fff;
+	padding: 10px;
+	overflow: hidden;
+}
+.k-header .k-title {
+    line-height: 24px;
+    font-size: 18px;
+    float: left;
+}
+.k-close{
+	cursor: pointer;
+	float: right;
+}
+.k-body{
+	padding: 30px 20px;
+	color: #666;
+	font-size: 14px;
+}
+.k-footer{
+	padding: 20px;
+	display: flex;
+	flex-direction:row;
+	justify-content: flex-end;
+}
+.k-default{
+	cursor: pointer;
+	margin-right: 20px;
+	border: none;
+	background:#999;
+	color: #fff;
+	padding: 4px 8px; 
+}
+.k-default:hover {
+    background: #666;
+    border-color: #c6e2ff;
+}
+.k-primary{
+	cursor: pointer;
+	border: none;
+	background:#409eff;
+	color: #fff;
+	padding: 4px 8px; 
+}
+.k-primary:hover {
+    background: #66b1ff;
+}
+</style>
+<body>
+	<!-- <div class="k-wrapper"></div>
+	<div class="k-dialog-wrapper">
+		<div class="k-dialog">
+			<div class="k-header">
+				<div class="k-title">title</div>
+				<div class="k-close">X</div>
+			</div>
+			<div class="k-body">
+				<span>这是文本</span>
+				<input type="text" name="" value="这是输入框">
+			</div>
+			<div class="k-footer">
+				<button class="k-default">取消</button>
+				<button class="k-primary">确定</button>
+			</div>
+		</div>
+	</div> -->
+	<button class="showDialog">显示</button>
+	<div>test</div>
+</body>
+</html>
+<script type="text/javascript">
+//组件是啥：数据和方法的简单封装
+//弹窗 
+//1.属性：宽 高 标题 内容
+//2.方法：打开 关闭 渲染 拖拽
+
+/*
+
+1.合并配置
+解构赋值添加默认参数
+Object.assign合并配置
+
+自定义事件绑定addEvent
+触发trigger
+
+*/
+// 自定义事件
+//内部独立 外部开放
+class MyEvent{
+	constructor(){
+		this.handler = {}
+	}
+	addEvent(eventName,fn){
+		if(typeof this.handler[eventName] == 'undefined'){
+			this.handler[eventName] = []
+		}
+		this.handler[eventName].push(fn)
+	}
+	trigger(eventName,fn){
+		this.handler[eventName].forEach(f=>{
+			f()
+		})
+	}
+	removeEvent(eventName,fn){
+		// if(!(fn in this.handler[eventName])){
+		// 	return;
+		// }
+		this.handler[eventName].forEach((f,i)=>{
+			if(f==fn){
+				this.handler[eventName].splice(0,1)
+			}
+		})
+	}
+}
+
+
+class Dialog extends MyEvent{
+	constructor(options){
+		super();
+		//传入对象 解构 合并配置
+		let newOpt = Object.assign({
+			width:'300px',
+			height:"300px",
+			title:'测试标题',
+			content:'测试内容',
+			dragable:true,
+			maskable:true,
+			isCancel:true,
+			confirm:function(){
+				console.log('默认点击了确认')
+			},
+			cancel:function(){
+				console.log('默认点击了取消')
+			}
+		},options)
+		this.ops = newOpt;
+		this.init();
+	}
+	init(){
+		this.renderView()
+		this.addEvent('confirm',this.ops.confirm)
+		this.addEvent('cancel',this.ops.cancel)
+
+		this.dialogEle.querySelector('.k-dialog').addEventListener('click',(e)=>{
+
+			switch(e.target.className){
+				case "k-close":
+					this.trigger('cancel');
+					this.close();//默认
+					break;
+				case "k-default":
+					this.trigger('cancel');
+					this.close();//默认
+					break;
+				case "k-primary":
+					this.trigger('confirm');
+					this.close();//默认
+					break;	
+			}
+
+		})
+		if(this.ops.dragable){
+			//k-header
+			let dragdom = this.dialogEle.querySelector('.k-header')
+			dragdom.addEventListener('mousedown',this.drag.bind(this),false)
+			dragdom.style.cursor = 'move'
+		}
+	}
+	drag(e){
+		let dialog = this.dialogEle.querySelector('.k-dialog')
+		let _mousemove = _mouseMove.bind(this)
+		let _mouseup = _mouseUp.bind(this)
+
+		let startX = e.pageX,
+			startY = e.pageY,
+			startL = parseInt(getComputedStyle(dialog).left),
+			startT = parseInt(getComputedStyle(dialog).top);
+		document.addEventListener('mousemove',_mousemove,false)
+		document.addEventListener('mouseup',_mouseup,false)
+		function _mouseMove(e){
+			//移动
+			//x轴一开始 marginLeft -15%!!!!!!!!
+			let minL = document.documentElement.clientWidth*0.15
+			let maxL = document.documentElement.clientWidth - dialog.offsetWidth + minL
+			let minT = 0
+			let maxT = document.documentElement.clientHeight - dialog.offsetHeight
+			let disX = startL + e.pageX - startX;
+			let disY = startT + e.pageY - startY;
+
+			console.log('start',startL,startT)
+			console.log('dis',disX,disY)
+			if(disX < minL){
+				disX = minL
+			} 
+			if(disX > maxL){
+				disX = maxL
+			}
+			if(disY < minT){
+				disY = minT
+			} 
+			if(disY > maxT){
+				disY = maxT
+			}
+			
+			dialog.style.left = disX+'px';
+			dialog.style.top = disY+'px';
+
+		}
+		function _mouseUp(e){
+			document.removeEventListener('mousemove',_mousemove,false)
+			document.removeEventListener('mouseup',_mouseup,false)
+		}
+	}
+	open(){
+		//遮罩
+		if(this.ops.maskable){
+			console.log(this.dialogEle.querySelector(".k-wrapper"))
+			this.dialogEle.querySelector(".k-wrapper").style.display="block"
+		}
+		this.dialogEle.querySelector(".k-dialog-wrapper").style.display="flex"
+	}
+	close(){
+		if(this.ops.maskable){
+			this.dialogEle.querySelector(".k-wrapper").style.display="none"
+		}
+		this.dialogEle.querySelector(".k-dialog-wrapper").style.display="none"
+	}
+
+	renderView(){
+		let dialogEle = document.createElement("div")
+		dialogEle.innerHTML = `<div class="k-wrapper"></div>
+	<div class="k-dialog-wrapper">
+		<div class="k-dialog" style="width:${this.ops.width};height:${this.ops.height}">
+			<div class="k-header">
+				<div class="k-title">${this.ops.title}</div>
+				<div class="k-close">X</div>
+			</div>
+			<div class="k-body">
+				${this.ops.content}
+			</div>
+			<div class="k-footer">
+			${this.ops.isCancel?'<button class="k-default">取消</button>':''}
+				<button class="k-primary">确定</button>
+			</div>
+		</div>
+	</div>`;
+        document.querySelector("body").appendChild(dialogEle);
+		this.dialogEle = dialogEle
+	}
+
+	
+}
+
+
+let d1 = new Dialog({
+    width: "40%",
+    height: "250px",
+    title: "配置标题",
+    content: "<input type='text' value='asdsad'>",
+    dragable: true, //是否可拖拽
+    maskable: true, //是否有遮罩
+    isCancel: true, //是否有取消
+    confim: function () {
+        console.log("点击了确定");
+    },
+    cancel() {
+        console.log("点击了取消");
+    }
+
+})
+
+
+document.querySelector(".showDialog").onclick = function(){
+	d1.open()
+}
+
+
+</script>

@@ -1,0 +1,89 @@
+.container {
+	box-sizing: border-box;
+	position: relative;
+	margin: 20px auto;
+	width: 1226px;
+	height: 460px;
+	overflow: hidden;
+}
+
+.container .wrapper {
+	position: relative;
+	height: 100%;
+}
+
+.container .wrapper .slide {
+	position: absolute;
+	top: 0;
+	left: 0;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	/* 所有SLIDE默认样式 */
+	z-index: 0;
+	opacity: 0;
+}
+
+.container .wrapper .slide:nth-child(1) {
+	/* 默认第一个展示 */
+	z-index: 1;
+	opacity: 1;
+}
+
+.container .wrapper .slide img {
+	width: 100%;
+	height: 100%;
+}
+
+.container .pagination {
+	position: absolute;
+	right: 20px;
+	bottom: 20px;
+	z-index: 999;
+	font-size: 0;
+}
+
+.container .pagination span {
+	display: inline-block;
+	margin: 0 4px;
+	width: 6px;
+	height: 6px;
+	background: rgba(0, 0, 0, .4);
+	border: 2px solid rgba(255, 255, 255, .4);
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.container .pagination span.active {
+	background: rgba(255, 255, 255, .4);
+	border-color: rgba(0, 0, 0, .4);
+}
+
+.container .button-prev,
+.container .button-next {
+	position: absolute;
+	top: 50%;
+	margin-top: -35px;
+	z-index: 999;
+	width: 40px;
+	height: 70px;
+	background: url("../images/icon-slides.png") no-repeat;
+}
+
+.container .button-prev {
+	left: 0;
+	background-position: -83px 0;
+}
+
+.container .button-prev:hover {
+	background-position: 0 0;
+}
+
+.container .button-next {
+	right: 0;
+	background-position: -124px 0;
+}
+
+.container .button-next:hover {
+	background-position: -41px 0;
+}

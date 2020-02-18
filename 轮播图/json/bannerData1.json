@@ -1,0 +1,16 @@
+[{
+	"id": 1,
+	"pic": "images/banner01.png"
+}, {
+	"id": 2,
+	"pic": "images/banner02.jpg"
+}, {
+	"id": 3,
+	"pic": "images/banner03.png"
+}, {
+	"id": 4,
+	"pic": "images/banner04.png"
+}, {
+	"id": 5,
+	"pic": "images/banner05.png"
+}]

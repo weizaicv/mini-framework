@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>定时器</title>
+</head>
+
+<body>
+	<input type="button" value="暂停" id="handleTimer">
+
+
+	<script>
+		let handleTimer = document.getElementById('handleTimer'),
+			timer = null,
+			count = 0;
+
+		function createTimer() {
+			timer = setInterval(() => {
+				count++;
+				console.log(count);
+			}, 1000);
+		}
+		createTimer();
+
+		handleTimer.onclick = function () {
+			if (timer) {
+				//=>TIMER存在说明有定时器在执行，我们让其暂停
+				clearInterval(timer);
+				timer = null; //=>清除定时器后，记得把TIMER赋值为null
+				handleTimer.value = "开始";
+				return;
+			}
+			//=>TIMER不存在：创建新的定时器
+			createTimer();
+			handleTimer.value = "暂停";
+		}
+
+
+		//=>浏览器中的定时器有两种：设置一个定时器，规定在等待时间之后执行某个方法
+		// setTimeout：执行一次
+		// setInterval：一直会执行下去（每间隔这么长时间都会执行）
+		//=>设置定时器会有一个返回值：是一个数字，代表当前是第几个定时器
+		// clearTimeout(数字) / clearInterval(数字)：清除第几个定时器
+		/* let n = 0,
+			timer = null;
+		timer = setInterval(() => {
+			console.log(++n);
+			if (n >= 5) {
+				clearInterval(timer); //=>定时器清除了，但是此时的timer=1
+				timer = null;
+			}
+		}, 1000); */
+		// let timer2 = setInterval(() => {}, 1000);
+		// let timer3 = setTimeout(() => {}, 1000);
+		// console.log(timer, timer2, timer3);
+	</script>
+</body>
+
+</html>

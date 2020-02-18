@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>珠峰培训-放大镜</title>
+	<!-- IMPORT CSS -->
+	<link rel="stylesheet" href="css/reset.min.css">
+	<style>
+		.magnifier {
+			box-sizing: border-box;
+			margin: 20px auto;
+			width: 550px;
+		}
+
+		.magnifier .abbre,
+		.magnifier .origin {
+			float: left;
+		}
+
+		.magnifier .abbre {
+			position: relative;
+			box-sizing: border-box;
+			width: 200px;
+			height: 150px;
+		}
+
+		.magnifier .abbre img {
+			width: 100%;
+			height: 100%;
+		}
+
+		.magnifier .abbre .mark {
+			display: none;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 80px;
+			height: 60px;
+			background: rgba(255, 0, 0, .3);
+			cursor: move;
+		}
+
+		.magnifier .origin {
+			display: none;
+			position: relative;
+			box-sizing: border-box;
+			width: 250px;
+			height: 250px;
+			overflow: hidden;
+		}
+
+		.magnifier .origin img {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<section class="magnifier clearfix">
+		<!-- 左侧缩略图 -->
+		<div class="abbre">
+			<img src="images/1.jpg" alt="">
+			<div class="mark"></div>
+		</div>
+		<!-- 右侧原图(大图) -->
+		<div class="origin">
+			<img src="images/2.jpg" alt="">
+		</div>
+	</section>
+
+	<!--IMPORT JS-->
+	<script src="js/jquery.min.js"></script>
+	<script>
+		let $abbre = $('.abbre'),
+			$mark = $abbre.find('.mark'),
+			$origin = $('.origin'),
+			$originImg = $origin.find('img');
+
+		//=>computedMark：计算MARK盒子的位置
+		let abbreW = $abbre.outerWidth(),
+			abbreH = $abbre.outerHeight(),
+			abbreOffset = $abbre.offset(),
+			markW = $mark.outerWidth(),
+			markH = $mark.outerHeight(),
+			originW = $origin.outerWidth(),
+			originH = $origin.outerHeight(),
+			originImgW = abbreW / markW * originW,
+			originImgH = abbreH / markH * originH;
+		//1.计算出大图的大小
+		$originImg.css({
+			width: originImgW,
+			height: originImgH
+		});
+
+		function computedMark(ev) {
+			//2.计算MARK的位置
+			let markL = ev.pageX - abbreOffset.left - markW / 2,
+				markT = ev.pageY - abbreOffset.top - markH / 2;
+			let minL = 0,
+				minT = 0,
+				maxL = abbreW - markW,
+				maxT = abbreH - markH;
+			markL = markL < minL ? minL : (markL > maxL ? maxL : markL);
+			markT = markT < minT ? minT : (markT > maxT ? maxT : markT);
+			$mark.css({
+				left: markL,
+				top: markT
+			});
+			//3.控制大图移动移动的距离
+			$originImg.css({
+				left: -markL / abbreW * originImgW,
+				top: -markT / abbreH * originImgH
+			});
+		}
+
+		$abbre.mouseenter(function (ev) {
+			$mark.css('display', 'block');
+			$origin.css('display', 'block');
+			computedMark(ev);
+		}).mouseleave(function (ev) {
+			$mark.css('display', 'none');
+			$origin.css('display', 'none');
+		}).mousemove(function (ev) {
+			computedMark(ev);
+		});
+	</script>
+</body>
+
+</html>

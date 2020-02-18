@@ -1,0 +1,49 @@
+html,
+body {
+	background: #E4E4E4;
+	overflow-x: hidden;
+}
+
+.container {
+	box-sizing: border-box;
+	margin: 20px auto;
+	width: 1000px;
+	/* display: flex; 基于FLEX实现水平排列，里面的每一项都会保持相同的高度，其中某一项变高，其余所有的项也都跟着变高 */
+}
+
+.container .column {
+	box-sizing: border-box;
+	float: left;
+	margin-right: 20px;
+	width: 320px;
+}
+
+.container .column:nth-last-child(1) {
+	margin-right: 0;
+}
+
+.container .column .item {
+	display: block;
+	padding: 10px;
+	margin-bottom: 10px;
+	background: #FFF;
+	box-shadow: 3px 3px 10px #666;
+}
+
+.container .column .item .imgBox {
+	/* height: 300px; 想要实现图片延迟加载，这块显示默认占位图，事先需要知道图片的高度（从服务获取的数据中有图片高度） */
+	background: url("../img/default.gif") no-repeat center center #EEE;
+	overflow: hidden;
+}
+
+.container .column .item .imgBox img {
+	display: none;
+	width: 100%;
+}
+
+.container .column .item p {
+	margin-top: 10px;
+	font-size: 12px;
+	color: #555;
+	line-height: 20px;
+}

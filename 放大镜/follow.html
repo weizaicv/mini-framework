@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>鼠标跟随</title>
+	<!-- IMPORT CSS -->
+	<link rel="stylesheet" href="css/reset.min.css">
+	<style>
+		.product {
+			box-sizing: border-box;
+			margin: 20px auto;
+			width: 460px;
+			display: flex;
+		}
+
+		.product li {
+			box-sizing: border-box;
+			margin-right: 20px;
+			width: 100px;
+			height: 76px;
+			border: 1px solid lightcoral;
+		}
+
+		.product li:nth-last-child(1) {
+			margin-right: 0;
+		}
+
+		.product li img {
+			width: 100%;
+			height: 100%;
+		}
+
+		.detail {
+			/* 相对于BODY定位 */
+			position: absolute;
+			top: 0;
+			left: 0;
+			box-sizing: border-box;
+			width: 400px;
+			height: 300px;
+			border: 1px solid #DDD;
+		}
+
+		.detail img {
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<ul class="product">
+		<!-- li*4>img[src='images/apple_$.jpg'][big-img='images/apple_$_bigger.jpg'] -->
+		<li>
+			<img src="images/apple_1.jpg" alt="" big-img="images/apple_1_bigger.jpg">
+		</li>
+		<li>
+			<img src="images/apple_2.jpg" alt="" big-img="images/apple_2_bigger.jpg">
+		</li>
+		<li>
+			<img src="images/apple_3.jpg" alt="" big-img="images/apple_3_bigger.jpg">
+		</li>
+		<li>
+			<img src="images/apple_4.jpg" alt="" big-img="images/apple_4_bigger.jpg">
+		</li>
+	</ul>
+	<!-- <div class="detail">
+		<img src="images/apple_1_bigger.jpg" alt="">
+	</div> -->
+
+	<!-- IMPORT JS -->
+	<script src="js/jquery.min.js"></script>
+	<script>
+		let $product = $('.product'),
+			$productList = $product.children('li'),
+			$body = $('body'),
+			$detail = null;
+
+		function computed(ev) {
+			$detail.css({
+				top: ev.pageY + 15,
+				left: ev.pageX + 15
+			});
+		}
+
+		$productList.mouseover(function (ev) {
+			//=>this:当前操作的LI
+			let $this = $(this),
+				bigImg = $this.children('img').attr('big-img');
+			if (!$detail) {
+				$body.append(`<div class="detail">
+					<img src="${bigImg}" alt="">
+				</div>`);
+				$detail = $('.detail');
+			}
+			computed(ev);
+		}).mouseout(function (ev) {
+			if ($detail) {
+				$detail.remove();
+				$detail = null;
+			}
+		}).mousemove(computed);
+	</script>
+</body>
+
+</html>

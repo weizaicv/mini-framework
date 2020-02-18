@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>珠峰培训</title>
+	<link rel="stylesheet" href="css/reset.min.css">
+	<style>
+		html,
+		body {
+			height: 100%;
+			overflow: hidden;
+		}
+
+		#box {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100px;
+			height: 100px;
+			background: red;
+		}
+
+		#box h2 {
+			height: 30px;
+			background: green;
+			cursor: move;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="box">
+		<h2></h2>
+	</div>
+
+	<script src="js/drag-plugin.js"></script>
+	<script>
+		new Drag('#box h2', {
+			element: box,
+			boundary: false
+		});
+	</script>
+
+	<script>
+		/* let css = function (curEle, attr) {
+			return parseFloat(window.getComputedStyle(curEle, null)[attr]);
+		};
+
+		let down = function (ev) {
+			this.startX = ev.pageX;
+			this.startY = ev.pageY;
+			this.startL = css(this, 'left');
+			this.startT = css(this, 'top');
+
+			this._MOVE = move.bind(this);
+			this._UP = up.bind(this);
+			document.addEventListener('mousemove', this._MOVE);
+			document.addEventListener('mouseup', this._UP);
+		};
+		let move = function (ev) {
+			let curL = ev.pageX - this.startX + this.startL,
+				curT = ev.pageY - this.startY + this.startT;
+			let minL = 0,
+				minT = 0,
+				maxL = document.documentElement.clientWidth - this.offsetWidth,
+				maxT = document.documentElement.clientHeight - this.offsetHeight;
+			curL = curL < minL ? minL : (curL > maxL ? maxL : curL);
+			curT = curT < minT ? minT : (curT > maxT ? maxT : curT);
+			this.style.left = curL + 'px';
+			this.style.top = curT + 'px';
+		};
+		let up = function (ev) {
+			document.removeEventListener('mousemove', this._MOVE);
+			document.removeEventListener('mouseup', this._UP);
+		};
+		box.addEventListener('mousedown', down); */
+	</script>
+</body>
+
+</html>
