@@ -17,14 +17,14 @@
             {{doubleAge}}
         </p>
         <input type="text" k-model="name">
-        <button @click="changeName">呵呵</button>
+        <button @click="changeName">haha</button>
         <div k-html="html"></div>
     </div>
-    <script src='./kvue.js'></script>
+    <script src='./wwvue.js'></script>
     <script src='./compile.js'></script>
 
     <script>
-        const kaikeba = new KVue({
+        const weizaivm = new WWVue({
             el: '#app',
             data: {
                 name: "I am test.",
@@ -45,11 +45,11 @@
             }
         })
     </script>
-    <!-- <script src="./kvue.js"></script>
+    <!-- <script src="./wwvue.js"></script>
     <script>
-        const app = new KVue({
+        const app = new WWVue({
             data: {
-                test: 'kaikeba',
+                test: 'weizaivm',
                 foo: {bar:'bar'}
             }
         })

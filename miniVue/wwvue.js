@@ -3,7 +3,7 @@
 //     data:{msg:'hello'}
 // })
 
-class KVue {
+class WWVue {
   constructor(options) {
     this.$options = options;
 
